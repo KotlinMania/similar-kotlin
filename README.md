@@ -103,7 +103,7 @@ Backend selection in `no_std` mode:
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:similar-kotlin:0.1.0-SNAPSHOT")
+    implementation("io.github.kotlinmania:similar-kotlin:0.1.0")
 }
 ```
 
