@@ -1,4 +1,4 @@
-// port-lint: source src/algorithms/hook.rs
+// port-lint: source algorithms/hook.rs
 package io.github.kotlinmania.similar.algorithms
 
 /**
@@ -76,6 +76,11 @@ interface DiffHook<E> {
  * want to prevent that the finish hook method is called.
  */
 class NoFinishHook<E, D : DiffHook<E>>(private val inner: D) : DiffHook<E> {
+    companion object {
+        /** Wraps another hook. */
+        fun <E, D : DiffHook<E>> new(d: D): NoFinishHook<E, D> = NoFinishHook(d)
+    }
+
     /** Extracts the inner hook. */
     fun intoInner(): D = inner
 
