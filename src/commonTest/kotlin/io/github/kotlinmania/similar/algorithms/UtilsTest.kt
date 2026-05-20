@@ -1,4 +1,4 @@
-// port-lint: source src/algorithms/utils.rs
+// port-lint: source algorithms/utils.rs
 package io.github.kotlinmania.similar.algorithms
 
 import io.github.kotlinmania.similar.asLookup

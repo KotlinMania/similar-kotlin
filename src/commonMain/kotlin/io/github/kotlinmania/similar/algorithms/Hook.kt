@@ -4,9 +4,8 @@ package io.github.kotlinmania.similar.algorithms
 /**
  * Result of a [DiffHook] call.
  *
- * In Kotlin this stands in for the upstream `Result<(), Self::Error>` — the
- * hook either succeeds (with no payload) or carries an implementation-defined
- * error of type [E].
+ * In Kotlin this result either succeeds with no payload or carries an
+ * implementation-defined error of type [E].
  */
 sealed class DiffHookResult<out E> {
     /** Successful hook call. */
@@ -17,7 +16,7 @@ sealed class DiffHookResult<out E> {
 }
 
 /**
- * A trait for reacting to an edit script from the "old" version to
+ * An interface for reacting to an edit script from the "old" version to
  * the "new" version.
  */
 interface DiffHook<E> {

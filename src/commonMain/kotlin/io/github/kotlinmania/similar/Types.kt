@@ -7,13 +7,13 @@ import io.github.kotlinmania.similar.algorithms.isEmptyRange
 
 /** An enum representing a diffing algorithm. */
 enum class Algorithm {
-    /** Picks the Myers algorithm from [io.github.kotlinmania.similar.algorithms.myers]. */
+    /** Picks the Myers algorithm. */
     Myers,
 
-    /** Picks the patience algorithm from [io.github.kotlinmania.similar.algorithms.patience]. */
+    /** Picks the patience algorithm. */
     Patience,
 
-    /** Picks the LCS algorithm from [io.github.kotlinmania.similar.algorithms.lcs]. */
+    /** Picks the LCS algorithm. */
     Lcs,
 }
 
@@ -74,6 +74,25 @@ data class Change<T>(
         valueData = value
         return valueData
     }
+
+    /** Returns the value as string if it is UTF-8 text. */
+    fun asStr(): String? = valueData as? String
+
+    /** Returns the value decoded lossily as UTF-8 string. */
+    fun toStringLossy(): String = valueData.toString()
+
+    /**
+     * Returns `true` if this change does not end in a newline and must be
+     * followed up by one if line based diffs are used.
+     */
+    fun missingNewline(): Boolean =
+        when (val value = valueData) {
+            is String -> !value.endsWith('\r') && !value.endsWith('\n')
+            else -> false
+        }
+
+    override fun toString(): String =
+        toStringLossy() + if (missingNewline()) "\n" else ""
 }
 
 /** Utility enum to capture a diff operation. */

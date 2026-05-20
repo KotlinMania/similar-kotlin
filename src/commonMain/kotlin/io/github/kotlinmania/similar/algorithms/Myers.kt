@@ -46,7 +46,7 @@ fun <E, T> myersDiffDeadline(
     return d.finish()
 }
 
-private class V(maxD: Int) {
+internal class V(maxD: Int) {
     private val offset = maxD
     private val values = MutableList(2 * maxD) { 0 }
 
@@ -59,12 +59,12 @@ private class V(maxD: Int) {
     }
 }
 
-private fun maxD(len1: Int, len2: Int): Int = (len1 + len2 + 1) / 2 + 1
+internal fun maxD(len1: Int, len2: Int): Int = (len1 + len2 + 1) / 2 + 1
 
 private fun splitAt(range: IntRange, at: Int): Pair<IntRange, IntRange> =
     range.first until at to (at until range.exclusiveEnd())
 
-private fun <T> findMiddleSnake(
+internal fun <T> findMiddleSnake(
     old: IndexLookup<T>,
     oldRange: IntRange,
     new: IndexLookup<T>,
@@ -185,40 +185,40 @@ private fun <E, T> conquer(
     val oldRange = oldStart until oldEnd
     val newRange = newStart until newEnd
 
-    if (isEmptyRange(oldRange) && isEmptyRange(newRange)) {
-        // Do nothing.
-    } else if (isEmptyRange(newRange)) {
-        when (val deleted = d.delete(oldRange.first, oldRange.rangeLen(), newRange.first)) {
-            is DiffHookResult.Err -> return deleted
-            is DiffHookResult.Ok -> {}
-        }
-    } else if (isEmptyRange(oldRange)) {
-        when (val inserted = d.insert(oldRange.first, newRange.first, newRange.rangeLen())) {
-            is DiffHookResult.Err -> return inserted
-            is DiffHookResult.Ok -> {}
-        }
-    } else {
-        val middle = findMiddleSnake(old, oldRange, new, newRange, vf, vb, deadline)
-        if (middle != null) {
-            val (xStart, yStart) = middle
-            val (oldA, oldB) = splitAt(oldRange, xStart)
-            val (newA, newB) = splitAt(newRange, yStart)
-            when (val left = conquer(d, old, oldA, new, newA, vf, vb, deadline)) {
-                is DiffHookResult.Err -> return left
-                is DiffHookResult.Ok -> {}
-            }
-            when (val right = conquer(d, old, oldB, new, newB, vf, vb, deadline)) {
-                is DiffHookResult.Err -> return right
-                is DiffHookResult.Ok -> {}
-            }
-        } else {
+    if (!isEmptyRange(oldRange) || !isEmptyRange(newRange)) {
+        if (isEmptyRange(newRange)) {
             when (val deleted = d.delete(oldRange.first, oldRange.rangeLen(), newRange.first)) {
                 is DiffHookResult.Err -> return deleted
                 is DiffHookResult.Ok -> {}
             }
+        } else if (isEmptyRange(oldRange)) {
             when (val inserted = d.insert(oldRange.first, newRange.first, newRange.rangeLen())) {
                 is DiffHookResult.Err -> return inserted
                 is DiffHookResult.Ok -> {}
+            }
+        } else {
+            val middle = findMiddleSnake(old, oldRange, new, newRange, vf, vb, deadline)
+            if (middle != null) {
+                val (xStart, yStart) = middle
+                val (oldA, oldB) = splitAt(oldRange, xStart)
+                val (newA, newB) = splitAt(newRange, yStart)
+                when (val left = conquer(d, old, oldA, new, newA, vf, vb, deadline)) {
+                    is DiffHookResult.Err -> return left
+                    is DiffHookResult.Ok -> {}
+                }
+                when (val right = conquer(d, old, oldB, new, newB, vf, vb, deadline)) {
+                    is DiffHookResult.Err -> return right
+                    is DiffHookResult.Ok -> {}
+                }
+            } else {
+                when (val deleted = d.delete(oldRange.first, oldRange.rangeLen(), newRange.first)) {
+                    is DiffHookResult.Err -> return deleted
+                    is DiffHookResult.Ok -> {}
+                }
+                when (val inserted = d.insert(oldRange.first, newRange.first, newRange.rangeLen())) {
+                    is DiffHookResult.Err -> return inserted
+                    is DiffHookResult.Ok -> {}
+                }
             }
         }
     }

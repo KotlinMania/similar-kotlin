@@ -1,4 +1,4 @@
-// port-lint: source src/deadline_support.rs
+// port-lint: source deadline_support.rs
 package io.github.kotlinmania.similar
 
 import kotlin.time.Duration

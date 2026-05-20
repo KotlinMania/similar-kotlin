@@ -53,7 +53,7 @@ fun <T> captureDiffSlicesDeadline(
     captureDiffDeadline(alg, old.asLookup(), old.indices, new.asLookup(), new.indices, deadline)
 
 /**
- * Return a measure of similarity in the range `0..=1`.
+ * Return a measure of similarity in the range from `0.0` through `1.0`.
  *
  * A ratio of `1.0` means the two sequences are a complete match, a
  * ratio of `0.0` would indicate completely distinct sequences. The input

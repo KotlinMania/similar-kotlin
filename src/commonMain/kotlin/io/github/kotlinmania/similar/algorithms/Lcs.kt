@@ -169,7 +169,7 @@ fun <E, T> lcsDiffDeadline(
     return d.finish()
 }
 
-private fun <T> makeTable(
+internal fun <T> makeTable(
     old: IndexLookup<T>,
     oldRange: IntRange,
     new: IndexLookup<T>,
@@ -178,7 +178,7 @@ private fun <T> makeTable(
 ): MutableMap<Pair<Int, Int>, Int>? {
     val oldLen = oldRange.rangeLen()
     val newLen = newRange.rangeLen()
-    val table = sortedMapOf<Pair<Int, Int>, Int>(compareBy<Pair<Int, Int>> { it.first }.thenBy { it.second })
+    val table = mutableMapOf<Pair<Int, Int>, Int>()
 
     for (i in (0 until newLen).reversed()) {
         if (deadlineExceeded(deadline)) {

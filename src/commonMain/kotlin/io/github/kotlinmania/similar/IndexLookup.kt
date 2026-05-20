@@ -1,16 +1,13 @@
-// port-lint: ignore — Kotlin shim standing in for std::ops::Index<usize>; the
-// similar crate is generic over any indexable source, but Kotlin lacks a built-in
-// counterpart to Rust's std::ops::Index trait, so the port defines its own.
+// port-lint: ignore - Kotlin shim for generic index access.
 package io.github.kotlinmania.similar
 
 /**
  * Read-only indexable lookup keyed by `Int`.
  *
- * Stands in for the upstream `std::ops::Index<usize, Output = T>` bound used
- * throughout the diff algorithms. Implementations decide how to fetch the
- * element at a given index; the [unique], [commonPrefixLen], and similar
- * helpers in [io.github.kotlinmania.similar.algorithms] route everything
- * through this interface.
+ * Implementations decide how to fetch the element at a given index; the
+ * [unique], [commonPrefixLen], and similar helpers in
+ * [io.github.kotlinmania.similar.algorithms] route everything through this
+ * interface.
  */
 fun interface IndexLookup<out T> {
     /** Returns the element at the given [index]. */
