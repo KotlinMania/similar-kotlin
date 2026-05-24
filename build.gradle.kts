@@ -199,10 +199,18 @@ kotlin {
         binaries.framework { baseName = "Similar"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "Similar"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Similar"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "Similar"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Similar"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
