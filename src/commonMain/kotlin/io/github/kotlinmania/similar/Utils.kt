@@ -109,7 +109,7 @@ class TextDiffRemapper private constructor(
 }
 
 /** Shortcut for diffing two slices. */
-fun <T : Comparable<T>> diffSlices(
+fun <T> diffSlices(
     alg: Algorithm,
     old: List<T>,
     new: List<T>,

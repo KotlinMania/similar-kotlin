@@ -20,11 +20,6 @@ class Replace<E, D : DiffHook<E>> private constructor(
 ) : DiffHook<E> {
     constructor(d: D) : this(d, null, null, null)
 
-    companion object {
-        /** Creates a new replace hook wrapping another hook. */
-        fun <E, D : DiffHook<E>> new(d: D): Replace<E, D> = Replace(d)
-    }
-
     /** Extracts the inner hook. */
     fun intoInner(): D = d
 
