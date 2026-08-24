@@ -29,7 +29,7 @@ class MyersTest {
     fun testDiff() {
         val old = listOf(0, 1, 2, 3, 4)
         val new = listOf(0, 1, 2, 9, 4)
-        val d = Replace.new(Capture())
+        val d = Replace(Capture())
 
         myersDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
@@ -47,7 +47,7 @@ class MyersTest {
     fun testContiguous() {
         val old = listOf(0, 1, 2, 3, 4, 4, 4, 5)
         val new = listOf(0, 1, 2, 8, 9, 4, 4, 7)
-        val d = Replace.new(Capture())
+        val d = Replace(Capture())
 
         myersDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
@@ -82,7 +82,7 @@ class MyersTest {
             it[25] = 99
             it[50] = 99
         }
-        val d = Replace.new(Capture())
+        val d = Replace(Capture())
 
         myersDiffDeadline(
             d,

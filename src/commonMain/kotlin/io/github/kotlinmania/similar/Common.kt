@@ -19,7 +19,7 @@ fun <T> captureDiff(
     oldRange: IntRange,
     new: IndexLookup<T>,
     newRange: IntRange,
-): List<DiffOp> where T : Comparable<T> =
+): List<DiffOp> =
     captureDiffDeadline(alg, old, oldRange, new, newRange, null)
 
 /** Creates a diff between old and new with the given algorithm capturing the ops. */
@@ -30,7 +30,7 @@ fun <T> captureDiffDeadline(
     new: IndexLookup<T>,
     newRange: IntRange,
     deadline: kotlin.time.TimeMark?,
-): List<DiffOp> where T : Comparable<T> {
+): List<DiffOp> {
     val d = Compact(Replace(Capture()), old, new)
     val result = diffDeadline(alg, d, old, oldRange, new, newRange, deadline)
     if (result is io.github.kotlinmania.similar.algorithms.DiffHookResult.Err) {
@@ -40,7 +40,7 @@ fun <T> captureDiffDeadline(
 }
 
 /** Creates a diff between old and new with the given algorithm capturing the ops. */
-fun <T> captureDiffSlices(alg: Algorithm, old: List<T>, new: List<T>): List<DiffOp> where T : Comparable<T> =
+fun <T> captureDiffSlices(alg: Algorithm, old: List<T>, new: List<T>): List<DiffOp> =
     captureDiffSlicesDeadline(alg, old, new, null)
 
 /** Creates a diff between old and new with the given algorithm capturing the ops. */
@@ -49,7 +49,7 @@ fun <T> captureDiffSlicesDeadline(
     old: List<T>,
     new: List<T>,
     deadline: kotlin.time.TimeMark?,
-): List<DiffOp> where T : Comparable<T> =
+): List<DiffOp> =
     captureDiffDeadline(alg, old.asLookup(), old.indices, new.asLookup(), new.indices, deadline)
 
 /**

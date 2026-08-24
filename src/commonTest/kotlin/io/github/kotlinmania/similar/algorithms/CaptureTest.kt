@@ -16,7 +16,7 @@ class CaptureTest {
         new[16] = 1000
         new[34] = 1000
 
-        val d = Replace.new(Capture())
+        val d = Replace(Capture())
         diffSlices(Algorithm.Myers, d, old, new)
 
         val groups = d.intoInner().intoGroupedOps(3)

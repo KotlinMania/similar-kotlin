@@ -12,7 +12,7 @@ class PatienceTest {
     fun testPatience() {
         val old = listOf(11, 1, 2, 2, 3, 4, 4, 4, 5, 47, 19)
         val new = listOf(10, 1, 2, 2, 8, 9, 4, 4, 7, 47, 18)
-        val d = Replace.new(Capture())
+        val d = Replace(Capture())
 
         patienceDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
@@ -23,7 +23,7 @@ class PatienceTest {
     fun testPatienceOutOfBoundsBug() {
         val old = listOf(1, 2, 3, 4)
         val new = listOf(1, 2, 3)
-        val d = Replace.new(Capture())
+        val d = Replace(Capture())
 
         patienceDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 

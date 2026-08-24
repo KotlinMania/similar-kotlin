@@ -62,16 +62,25 @@ private data class MultiLookup(
     fun values(): List<String> = seqs.map { it.first }
 }
 
-private fun pushValues(v: MutableList<MutableList<Pair<Boolean, String>>>, idx: Int, emphasized: Boolean, s: String) {
+/** A highlighted segment within an [InlineChange]. */
+data class InlineSegment(
+    val isEmphasized: Boolean,
+    val value: String,
+) {
+    val first: Boolean get() = isEmphasized
+    val second: String get() = value
+}
+
+private fun pushValues(v: MutableList<MutableList<InlineSegment>>, idx: Int, emphasized: Boolean, s: String) {
     while (v.size < idx + 1) {
-        v += mutableListOf<Pair<Boolean, String>>()
+        v += mutableListOf<InlineSegment>()
     }
     if (emphasized) {
         for (segment in s.asDiffableStr().tokenizeLinesAndNewlines()) {
-            v[idx] += !segment.asDiffableStr().endsWithNewline() to segment
+            v[idx] += InlineSegment(!segment.asDiffableStr().endsWithNewline(), segment)
         }
     } else {
-        v[idx] += false to s
+        v[idx] += InlineSegment(false, s)
     }
 }
 
@@ -80,11 +89,11 @@ data class InlineChange(
     private val tagValue: ChangeTag,
     private val oldIndexValue: Int?,
     private val newIndexValue: Int?,
-    private val valuesValue: List<Pair<Boolean, String>>,
+    private val valuesValue: List<InlineSegment>,
 ) {
     companion object {
         fun from(change: Change<String>): InlineChange =
-            InlineChange(change.tag(), change.oldIndex(), change.newIndex(), listOf(false to change.value()))
+            InlineChange(change.tag(), change.oldIndex(), change.newIndex(), listOf(InlineSegment(false, change.value())))
     }
 
     /** Returns the change tag. */
@@ -97,13 +106,13 @@ data class InlineChange(
     fun newIndex(): Int? = newIndexValue
 
     /** Returns the changed values. */
-    fun values(): List<Pair<Boolean, String>> = valuesValue
+    fun values(): List<InlineSegment> = valuesValue
 
     /** Iterates over all potentially lossy UTF-8 decoded values. */
-    fun iterStringsLossy(): Iterator<Pair<Boolean, String>> = values().iterator()
+    fun iterStringsLossy(): Iterator<InlineSegment> = values().iterator()
 
     /** Returns `true` if this change does not end in a newline. */
-    fun missingNewline(): Boolean = values().lastOrNull()?.second?.asDiffableStr()?.endsWithNewline() != true
+    fun missingNewline(): Boolean = values().lastOrNull()?.value?.asDiffableStr()?.endsWithNewline() != true
 
     override fun toString(): String {
         val rendered = buildString {
@@ -171,8 +180,8 @@ internal fun iterInlineChanges(diff: TextDiff, op: DiffOp, deadline: TimeMark?):
         }.iterator()
     }
 
-    val oldValues = mutableListOf<MutableList<Pair<Boolean, String>>>()
-    val newValues = mutableListOf<MutableList<Pair<Boolean, String>>>()
+    val oldValues = mutableListOf<MutableList<InlineSegment>>()
+    val newValues = mutableListOf<MutableList<InlineSegment>>()
 
     for (diffOp in ops) {
         when (diffOp) {
