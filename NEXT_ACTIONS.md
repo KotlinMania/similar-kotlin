@@ -5,9 +5,9 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 20/20 (100.0%)
-- **Function parity:** 218/249 matched (target 274) — 87.6%
-- **Class/type parity:** 31/50 matched (target 58) — 62.0%
-- **Combined symbol parity:** 249/299 matched (target 332) — 83.3%
+- **Function parity:** 216/249 matched (target 272) — 86.7%
+- **Class/type parity:** 31/50 matched (target 59) — 62.0%
+- **Combined symbol parity:** 247/299 matched (target 331) — 82.6%
 - **Average inline-code cosine:** 0.54 (function body across 17 matched files)
 - **Average documentation cosine:** 0.75 (doc text across 17 matched files)
 - **Cheat-zeroed Files:** 2
@@ -30,7 +30,7 @@ Every matched file is listed below with function and type symbol parity.
 ### 1. algorithms.capture
 
 - **Target:** `algorithms.Capture`
-- **Similarity:** 0.69
+- **Similarity:** 0.68
 - **Dependents:** 2
 - **Priority Score:** 2011103.1
 - **Functions:** 9/9 matched
@@ -42,11 +42,11 @@ Every matched file is listed below with function and type symbol parity.
 ### 2. algorithms.replace
 
 - **Target:** `algorithms.Replace`
-- **Similarity:** 0.58
+- **Similarity:** 0.55
 - **Dependents:** 1
-- **Priority Score:** 1011504.1
-- **Functions:** 13/13 matched
-- **Missing functions:** _none_
+- **Priority Score:** 1021504.6
+- **Functions:** 12/13 matched (target 12)
+- **Missing functions:** `new`
 - **Types:** 1/2 matched
 - **Missing types:** `Error`
 - **Tests:** 2/2 matched
@@ -130,7 +130,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Priority Score:** 41905.6
 - **Functions:** 13/16 matched
 - **Missing functions:** `index`, `fmt`, `test_serde`
-- **Types:** 2/3 matched
+- **Types:** 2/3 matched (target 4)
 - **Missing types:** `Output`
 - **Tests:** 1/2 matched
 
@@ -169,7 +169,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Output`
 - **Tests:** 1/1 matched
 
-### 13. iter
+### 13. algorithms.hook
+
+- **Target:** `algorithms.Hook`
+- **Similarity:** 0.52
+- **Dependents:** 0
+- **Priority Score:** 21004.8
+- **Functions:** 6/7 matched (target 11)
+- **Missing functions:** `new`
+- **Types:** 2/3 matched (target 5)
+- **Missing types:** `Error`
+- **Lint issues:** 6
+
+### 14. iter
 
 - **Target:** `similar.Iter`
 - **Similarity:** 0.31
@@ -180,7 +192,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched (target 2)
 - **Missing types:** `Item`
 
-### 14. udiff
+### 15. udiff
 
 - **Target:** `similar.Udiff`
 - **Similarity:** 0.50
@@ -191,18 +203,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/5 matched (target 6)
 - **Missing types:** _none_
 - **Tests:** 3/3 matched
-
-### 15. algorithms.hook
-
-- **Target:** `algorithms.Hook`
-- **Similarity:** 0.58
-- **Dependents:** 0
-- **Priority Score:** 11004.2
-- **Functions:** 7/7 matched (target 12)
-- **Missing functions:** _none_
-- **Types:** 2/3 matched (target 5)
-- **Missing types:** `Error`
-- **Lint issues:** 6
 
 ### 16. text.utils
 
