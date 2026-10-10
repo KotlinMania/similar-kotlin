@@ -8,19 +8,21 @@ import kotlin.test.assertEquals
 class UtilsTest {
     @Test
     fun testUnique() {
-        val u = unique(listOf('a', 'b', 'c', 'd', 'd', 'b').asLookup(), 0 until 6)
-            .map { it.value() to it.originalIndex() }
+        val u =
+            unique(listOf('a', 'b', 'c', 'd', 'd', 'b').asLookup(), 0 until 6)
+                .map { it.value() to it.originalIndex() }
         assertEquals(listOf('a' to 0, 'c' to 2), u)
     }
 
     @Test
     fun testIntHasher() {
-        val ih = IdentifyDistinct(
-            listOf("", "foo", "bar", "baz").asLookup(),
-            1 until 4,
-            listOf("", "foo", "blah", "baz").asLookup(),
-            1 until 4,
-        )
+        val ih =
+            IdentifyDistinct(
+                listOf("", "foo", "bar", "baz").asLookup(),
+                1 until 4,
+                listOf("", "foo", "blah", "baz").asLookup(),
+                1 until 4,
+            )
         assertEquals(0, ih.oldLookup()[1])
         assertEquals(1, ih.oldLookup()[2])
         assertEquals(2, ih.oldLookup()[3])
@@ -37,9 +39,9 @@ class UtilsTest {
             0,
             commonPrefixLen(
                 "".encodeToByteArray().asList().asLookup(),
-                0 until 0,
+                IntRange.EMPTY,
                 "".encodeToByteArray().asList().asLookup(),
-                0 until 0,
+                IntRange.EMPTY,
             ),
         )
         assertEquals(
@@ -77,9 +79,9 @@ class UtilsTest {
             0,
             commonSuffixLen(
                 "".encodeToByteArray().asList().asLookup(),
-                0 until 0,
+                IntRange.EMPTY,
                 "".encodeToByteArray().asList().asLookup(),
-                0 until 0,
+                IntRange.EMPTY,
             ),
         )
         assertEquals(

@@ -38,17 +38,21 @@ private data class MultiLookup(
 
         for (offset in 0 until len) {
             val (slice, stringIdx, charIdx) = seqs[idx + offset]
-            last = when (val current = last) {
-                null -> Triple(stringIdx, charIdx, slice.length)
-                else -> {
-                    if (current.first == stringIdx) {
-                        Triple(stringIdx, current.second, current.third + slice.length)
-                    } else {
-                        rv += current.first to strings[current.first].substring(current.second, current.second + current.third)
+            last =
+                when (val current = last) {
+                    null -> {
                         Triple(stringIdx, charIdx, slice.length)
                     }
+
+                    else -> {
+                        if (current.first == stringIdx) {
+                            Triple(stringIdx, current.second, current.third + slice.length)
+                        } else {
+                            rv += current.first to strings[current.first].substring(current.second, current.second + current.third)
+                            Triple(stringIdx, charIdx, slice.length)
+                        }
+                    }
                 }
-            }
         }
 
         val current = last
@@ -112,25 +116,32 @@ data class InlineChange(
     fun iterStringsLossy(): Iterator<InlineSegment> = values().iterator()
 
     /** Returns `true` if this change does not end in a newline. */
-    fun missingNewline(): Boolean = values().lastOrNull()?.value?.asDiffableStr()?.endsWithNewline() != true
+    fun missingNewline(): Boolean =
+        values()
+            .lastOrNull()
+            ?.value
+            ?.asDiffableStr()
+            ?.endsWithNewline() != true
 
     override fun toString(): String {
-        val rendered = buildString {
-            for ((emphasized, value) in iterStringsLossy()) {
-                val marker = if (!emphasized) {
-                    ""
-                } else {
-                    when (tagValue) {
-                        ChangeTag.Equal -> ""
-                        ChangeTag.Delete -> "-"
-                        ChangeTag.Insert -> "+"
-                    }
+        val rendered =
+            buildString {
+                for ((emphasized, value) in iterStringsLossy()) {
+                    val marker =
+                        if (!emphasized) {
+                            ""
+                        } else {
+                            when (tagValue) {
+                                ChangeTag.Equal -> ""
+                                ChangeTag.Delete -> "-"
+                                ChangeTag.Insert -> "+"
+                            }
+                        }
+                    append(marker)
+                    append(value)
+                    append(marker)
                 }
-                append(marker)
-                append(value)
-                append(marker)
             }
-        }
         return rendered + if (missingNewline()) "\n" else ""
     }
 }
@@ -164,12 +175,13 @@ internal fun iterInlineChanges(diff: TextDiff, op: DiffOp, deadline: TimeMark?):
     val oldLookup = MultiLookup.new(oldSlices)
     val newLookup = MultiLookup.new(newSlices)
 
-    val ops = captureDiffSlicesDeadline(
-        Algorithm.Patience,
-        oldLookup.values(),
-        newLookup.values(),
-        deadline,
-    )
+    val ops =
+        captureDiffSlicesDeadline(
+            Algorithm.Patience,
+            oldLookup.values(),
+            newLookup.values(),
+            deadline,
+        )
 
     if (getDiffRatio(ops, oldLookup.len(), newLookup.len()) < MIN_RATIO) {
         return sequence {

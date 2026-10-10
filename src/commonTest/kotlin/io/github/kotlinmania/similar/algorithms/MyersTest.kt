@@ -77,11 +77,12 @@ class MyersTest {
     @Test
     fun testDeadlineReached() {
         val old = (0 until 100).toList()
-        val new = old.toMutableList().also {
-            it[10] = 99
-            it[25] = 99
-            it[50] = 99
-        }
+        val new =
+            old.toMutableList().also {
+                it[10] = 99
+                it[25] = 99
+                it[50] = 99
+            }
         val d = Replace(Capture())
 
         myersDiffDeadline(
@@ -110,7 +111,7 @@ class MyersTest {
         assertTrue(same.finished)
 
         val empty = FinishHook()
-        myersDiff(empty, emptyList<Int>().asLookup(), 0 until 0, emptyList<Int>().asLookup(), 0 until 0)
+        myersDiff(empty, emptyList<Int>().asLookup(), IntRange.EMPTY, emptyList<Int>().asLookup(), IntRange.EMPTY)
         assertTrue(empty.finished)
     }
 }
@@ -128,10 +129,19 @@ private fun <T> applyOps(old: List<T>, new: List<T>, ops: List<DiffOp>): List<T>
     buildList {
         for (op in ops) {
             when (op) {
-                is DiffOp.Equal -> addAll(old.subList(op.oldIndex, op.oldIndex + op.len))
+                is DiffOp.Equal -> {
+                    addAll(old.subList(op.oldIndex, op.oldIndex + op.len))
+                }
+
                 is DiffOp.Delete -> {}
-                is DiffOp.Insert -> addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
-                is DiffOp.Replace -> addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+
+                is DiffOp.Insert -> {
+                    addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+                }
+
+                is DiffOp.Replace -> {
+                    addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+                }
             }
         }
     }

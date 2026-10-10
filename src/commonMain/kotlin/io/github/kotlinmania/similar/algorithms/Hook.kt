@@ -9,10 +9,12 @@ package io.github.kotlinmania.similar.algorithms
  */
 sealed class DiffHookResult<out E> {
     /** Successful hook call. */
-    object Ok : DiffHookResult<Nothing>()
+    data object Ok : DiffHookResult<Nothing>()
 
     /** Failed hook call carrying the implementation-defined error. */
-    class Err<out E>(val error: E) : DiffHookResult<E>()
+    data class Err<out E>(
+        val error: E,
+    ) : DiffHookResult<E>()
 }
 
 /**
@@ -25,25 +27,19 @@ interface DiffHook<E> {
      * `newIndex` (in the new version) start an section equal in both
      * versions, of length `len`.
      */
-    fun equal(oldIndex: Int, newIndex: Int, len: Int): DiffHookResult<E> {
-        return DiffHookResult.Ok
-    }
+    fun equal(oldIndex: Int, newIndex: Int, len: Int): DiffHookResult<E> = DiffHookResult.Ok
 
     /**
      * Called when a section of length `oldLen`, starting at `oldIndex`,
      * needs to be deleted from the old version.
      */
-    fun delete(oldIndex: Int, oldLen: Int, newIndex: Int): DiffHookResult<E> {
-        return DiffHookResult.Ok
-    }
+    fun delete(oldIndex: Int, oldLen: Int, newIndex: Int): DiffHookResult<E> = DiffHookResult.Ok
 
     /**
      * Called when a section of the new version, of length `newLen`
      * and starting at `newIndex`, needs to be inserted at position `oldIndex`.
      */
-    fun insert(oldIndex: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
-        return DiffHookResult.Ok
-    }
+    fun insert(oldIndex: Int, newIndex: Int, newLen: Int): DiffHookResult<E> = DiffHookResult.Ok
 
     /**
      * Called when a section of the old version, starting at index
@@ -55,17 +51,14 @@ interface DiffHook<E> {
      *
      * You can use the [Replace] hook to automatically generate these.
      */
-    fun replace(oldIndex: Int, oldLen: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
-        return when (val r = delete(oldIndex, oldLen, newIndex)) {
+    fun replace(oldIndex: Int, oldLen: Int, newIndex: Int, newLen: Int): DiffHookResult<E> =
+        when (val r = delete(oldIndex, oldLen, newIndex)) {
             is DiffHookResult.Err -> r
             is DiffHookResult.Ok -> insert(oldIndex, newIndex, newLen)
         }
-    }
 
     /** Always called at the end of the algorithm. */
-    fun finish(): DiffHookResult<E> {
-        return DiffHookResult.Ok
-    }
+    fun finish(): DiffHookResult<E> = DiffHookResult.Ok
 }
 
 /**
@@ -74,27 +67,19 @@ interface DiffHook<E> {
  * This hook is useful in situations where diff hooks are composed but you
  * want to prevent that the finish hook method is called.
  */
-class NoFinishHook<E, D : DiffHook<E>>(private val inner: D) : DiffHook<E> {
+class NoFinishHook<E, D : DiffHook<E>>(
+    private val inner: D,
+) : DiffHook<E> {
     /** Extracts the inner hook. */
     fun intoInner(): D = inner
 
-    override fun equal(oldIndex: Int, newIndex: Int, len: Int): DiffHookResult<E> {
-        return inner.equal(oldIndex, newIndex, len)
-    }
+    override fun equal(oldIndex: Int, newIndex: Int, len: Int): DiffHookResult<E> = inner.equal(oldIndex, newIndex, len)
 
-    override fun delete(oldIndex: Int, oldLen: Int, newIndex: Int): DiffHookResult<E> {
-        return inner.delete(oldIndex, oldLen, newIndex)
-    }
+    override fun delete(oldIndex: Int, oldLen: Int, newIndex: Int): DiffHookResult<E> = inner.delete(oldIndex, oldLen, newIndex)
 
-    override fun insert(oldIndex: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
-        return inner.insert(oldIndex, newIndex, newLen)
-    }
+    override fun insert(oldIndex: Int, newIndex: Int, newLen: Int): DiffHookResult<E> = inner.insert(oldIndex, newIndex, newLen)
 
-    override fun replace(oldIndex: Int, oldLen: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
-        return inner.replace(oldIndex, oldLen, newIndex, newLen)
-    }
+    override fun replace(oldIndex: Int, oldLen: Int, newIndex: Int, newLen: Int): DiffHookResult<E> = inner.replace(oldIndex, oldLen, newIndex, newLen)
 
-    override fun finish(): DiffHookResult<E> {
-        return DiffHookResult.Ok
-    }
+    override fun finish(): DiffHookResult<E> = DiffHookResult.Ok
 }

@@ -4,10 +4,10 @@ package io.github.kotlinmania.similar.text
 import io.github.kotlinmania.similar.Algorithm
 import io.github.kotlinmania.similar.Change
 import io.github.kotlinmania.similar.DiffOp
+import io.github.kotlinmania.similar.UnifiedDiff
 import io.github.kotlinmania.similar.captureDiffSlicesDeadline
 import io.github.kotlinmania.similar.getDiffRatio
 import io.github.kotlinmania.similar.groupDiffOps
-import io.github.kotlinmania.similar.UnifiedDiff
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeMark
@@ -15,8 +15,13 @@ import kotlin.time.TimeSource
 import kotlin.time.toDuration
 
 internal sealed class Deadline {
-    data class Absolute(val instant: TimeMark) : Deadline()
-    data class Relative(val duration: Duration) : Deadline()
+    data class Absolute(
+        val instant: TimeMark,
+    ) : Deadline()
+
+    data class Relative(
+        val duration: Duration,
+    ) : Deadline()
 
     fun intoInstant(): TimeMark =
         when (this) {
@@ -155,7 +160,9 @@ data class TextDiff(
     fun groupedOps(n: Int): List<List<DiffOp>> = groupDiffOps(ops().toList(), n)
 
     /** Flattens out the diff into all changes. */
-    fun iterAllChanges(): Iterator<Change<String>> = io.github.kotlinmania.similar.AllChangesIter(old, new, ops)
+    fun iterAllChanges(): Iterator<Change<String>> =
+        io.github.kotlinmania.similar
+            .AllChangesIter(old, new, ops)
 
     /** Utility to return a unified diff formatter. */
     fun unifiedDiff(): UnifiedDiff = UnifiedDiff.fromTextDiff(this)
@@ -195,7 +202,8 @@ fun getCloseMatches(word: String, possibilities: List<String>, n: Int, cutoff: F
 }
 
 private fun List<String>.asLookup(): io.github.kotlinmania.similar.IndexLookup<String> =
-    io.github.kotlinmania.similar.IndexLookup { this[it] }
+    io.github.kotlinmania.similar
+        .IndexLookup { this[it] }
 
 private val Int.milliseconds: Duration
     get() = toDuration(DurationUnit.MILLISECONDS)

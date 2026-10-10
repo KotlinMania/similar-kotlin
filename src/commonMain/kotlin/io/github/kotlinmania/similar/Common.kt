@@ -61,15 +61,17 @@ fun <T> captureDiffSlicesDeadline(
  * sequence.
  */
 fun getDiffRatio(ops: List<DiffOp>, oldLen: Int, newLen: Int): Float {
-    val matches = ops.sumOf { op ->
-        when (op) {
-            is DiffOp.Equal -> op.len
-            is DiffOp.Delete,
-            is DiffOp.Insert,
-            is DiffOp.Replace,
-            -> 0
+    val matches =
+        ops.sumOf { op ->
+            when (op) {
+                is DiffOp.Equal -> op.len
+
+                is DiffOp.Delete,
+                is DiffOp.Insert,
+                is DiffOp.Replace,
+                -> 0
+            }
         }
-    }
     val len = oldLen + newLen
     return if (len == 0) {
         1.0f
@@ -90,7 +92,7 @@ fun groupDiffOps(inputOps: List<DiffOp>, n: Int): List<List<DiffOp>> {
         return emptyList()
     }
 
-    var pendingGroup = mutableListOf<DiffOp>()
+    val pendingGroup = mutableListOf<DiffOp>()
     val rv = mutableListOf<List<DiffOp>>()
 
     val first = ops.first()
@@ -109,20 +111,21 @@ fun groupDiffOps(inputOps: List<DiffOp>, n: Int): List<List<DiffOp>> {
     for (op in ops) {
         if (op is DiffOp.Equal) {
             if (op.len > n * 2) {
-                pendingGroup += DiffOp.Equal(
-                    oldIndex = op.oldIndex,
-                    newIndex = op.newIndex,
-                    len = n,
-                )
-                rv += pendingGroup
+                pendingGroup +=
+                    DiffOp.Equal(
+                        oldIndex = op.oldIndex,
+                        newIndex = op.newIndex,
+                        len = n,
+                    )
+                rv += pendingGroup.toList()
                 val offset = (op.len - n).coerceAtLeast(0)
-                pendingGroup = mutableListOf(
+                pendingGroup.clear()
+                pendingGroup +=
                     DiffOp.Equal(
                         oldIndex = op.oldIndex + offset,
                         newIndex = op.newIndex + offset,
                         len = op.len - offset,
-                    ),
-                )
+                    )
                 continue
             }
         }
@@ -130,7 +133,7 @@ fun groupDiffOps(inputOps: List<DiffOp>, n: Int): List<List<DiffOp>> {
     }
 
     if (pendingGroup.isNotEmpty() && pendingGroup.any { it !is DiffOp.Equal }) {
-        rv += pendingGroup
+        rv += pendingGroup.toList()
     }
 
     return rv

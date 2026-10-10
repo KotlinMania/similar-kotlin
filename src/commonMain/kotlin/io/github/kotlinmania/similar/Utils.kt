@@ -10,11 +10,12 @@ private data class SliceRemapper(
     companion object {
         fun new(source: String, slices: List<String>): SliceRemapper {
             var offset = 0
-            val indexes = slices.map { item ->
-                val start = offset
-                offset += item.length
-                start to offset
-            }
+            val indexes =
+                slices.map { item ->
+                    val start = offset
+                    offset += item.length
+                    start to offset
+                }
             return SliceRemapper(source, indexes)
         }
     }
@@ -25,11 +26,12 @@ private data class SliceRemapper(
             return null
         }
         if (range.first == end) {
-            val start = if (range.first == indexes.size) {
-                source.length
-            } else {
-                indexes.getOrNull(range.first)?.first ?: return null
-            }
+            val start =
+                if (range.first == indexes.size) {
+                    source.length
+                } else {
+                    indexes.getOrNull(range.first)?.first ?: return null
+                }
             return source.substring(start, start)
         }
         val start = indexes.getOrNull(range.first)?.first ?: return null
@@ -79,32 +81,45 @@ class TextDiffRemapper private constructor(
     /** Given a diff operation, yields the changes it encodes against the original strings. */
     fun iterSlices(op: DiffOp): List<Pair<ChangeTag, String>> =
         when (op) {
-            is DiffOp.Equal -> listOf(
-                ChangeTag.Equal to requireNotNull(old.slice(op.oldIndex until op.oldIndex + op.len)) {
-                    "slice out of bounds"
-                },
-            )
+            is DiffOp.Equal -> {
+                listOf(
+                    ChangeTag.Equal to
+                        requireNotNull(old.slice(op.oldIndex until op.oldIndex + op.len)) {
+                            "slice out of bounds"
+                        },
+                )
+            }
 
-            is DiffOp.Insert -> listOf(
-                ChangeTag.Insert to requireNotNull(new.slice(op.newIndex until op.newIndex + op.newLen)) {
-                    "slice out of bounds"
-                },
-            )
+            is DiffOp.Insert -> {
+                listOf(
+                    ChangeTag.Insert to
+                        requireNotNull(new.slice(op.newIndex until op.newIndex + op.newLen)) {
+                            "slice out of bounds"
+                        },
+                )
+            }
 
-            is DiffOp.Delete -> listOf(
-                ChangeTag.Delete to requireNotNull(old.slice(op.oldIndex until op.oldIndex + op.oldLen)) {
-                    "slice out of bounds"
-                },
-            )
+            is DiffOp.Delete -> {
+                listOf(
+                    ChangeTag.Delete to
+                        requireNotNull(old.slice(op.oldIndex until op.oldIndex + op.oldLen)) {
+                            "slice out of bounds"
+                        },
+                )
+            }
 
-            is DiffOp.Replace -> listOf(
-                ChangeTag.Delete to requireNotNull(old.slice(op.oldIndex until op.oldIndex + op.oldLen)) {
-                    "slice out of bounds"
-                },
-                ChangeTag.Insert to requireNotNull(new.slice(op.newIndex until op.newIndex + op.newLen)) {
-                    "slice out of bounds"
-                },
-            )
+            is DiffOp.Replace -> {
+                listOf(
+                    ChangeTag.Delete to
+                        requireNotNull(old.slice(op.oldIndex until op.oldIndex + op.oldLen)) {
+                            "slice out of bounds"
+                        },
+                    ChangeTag.Insert to
+                        requireNotNull(new.slice(op.newIndex until op.newIndex + op.newLen)) {
+                            "slice out of bounds"
+                        },
+                )
+            }
         }
 }
 
@@ -148,7 +163,12 @@ fun diffGraphemes(alg: Algorithm, old: String, new: String): List<Pair<ChangeTag
 /** Shortcut for making a line diff. */
 fun diffLines(alg: Algorithm, old: String, new: String): List<Pair<ChangeTag, String>> {
     val changes = mutableListOf<Pair<ChangeTag, String>>()
-    val iter = TextDiff.configure().algorithm(alg).diffLines(old, new).iterAllChanges()
+    val iter =
+        TextDiff
+            .configure()
+            .algorithm(alg)
+            .diffLines(old, new)
+            .iterAllChanges()
     while (iter.hasNext()) {
         val change = iter.next()
         changes += change.tag() to change.value()

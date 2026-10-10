@@ -36,29 +36,32 @@ class Compact<E, T, D : DiffHook<E>>(
     fun asMut(): D = d
 
     override fun equal(oldIndex: Int, newIndex: Int, len: Int): DiffHookResult<E> {
-        ops += DiffOp.Equal(
-            oldIndex = oldIndex,
-            newIndex = newIndex,
-            len = len,
-        )
+        ops +=
+            DiffOp.Equal(
+                oldIndex = oldIndex,
+                newIndex = newIndex,
+                len = len,
+            )
         return DiffHookResult.Ok
     }
 
     override fun delete(oldIndex: Int, oldLen: Int, newIndex: Int): DiffHookResult<E> {
-        ops += DiffOp.Delete(
-            oldIndex = oldIndex,
-            oldLen = oldLen,
-            newIndex = newIndex,
-        )
+        ops +=
+            DiffOp.Delete(
+                oldIndex = oldIndex,
+                oldLen = oldLen,
+                newIndex = newIndex,
+            )
         return DiffHookResult.Ok
     }
 
     override fun insert(oldIndex: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
-        ops += DiffOp.Insert(
-            oldIndex = oldIndex,
-            newIndex = newIndex,
-            newLen = newLen,
-        )
+        ops +=
+            DiffOp.Insert(
+                oldIndex = oldIndex,
+                newIndex = newIndex,
+                newLen = newLen,
+            )
         return DiffHookResult.Ok
     }
 
@@ -66,7 +69,10 @@ class Compact<E, T, D : DiffHook<E>>(
         cleanupDiffOps(old, new, ops)
         for (op in ops) {
             when (val applied = op.applyToHook(d)) {
-                is DiffHookResult.Err -> return applied
+                is DiffHookResult.Err -> {
+                    return applied
+                }
+
                 is DiffHookResult.Ok -> {}
             }
         }
@@ -189,7 +195,9 @@ private fun <T> shiftDiffOpsUp(
                 pointer -= 1
             }
 
-            else -> error("unexpected tag")
+            else -> {
+                error("unexpected tag")
+            }
         }
     }
     return pointer
@@ -281,7 +289,9 @@ private fun <T> shiftDiffOpsDown(
                 ops.removeAt(pointer + 1)
             }
 
-            else -> error("unexpected tag")
+            else -> {
+                error("unexpected tag")
+            }
         }
     }
     return pointer
