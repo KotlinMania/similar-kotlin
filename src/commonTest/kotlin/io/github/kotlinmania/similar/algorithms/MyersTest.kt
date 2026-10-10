@@ -51,7 +51,17 @@ class MyersTest {
 
         myersDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
-        assertEquals(new, applyOps(old, new, d.intoInner().ops()))
+        val ops = d.intoInner().ops()
+        assertEquals(
+            listOf(
+                DiffOp.Equal(0, 0, 3),
+                DiffOp.Replace(3, 1, 3, 2),
+                DiffOp.Equal(4, 5, 2),
+                DiffOp.Replace(6, 2, 7, 1),
+            ),
+            ops,
+        )
+        assertEquals(new, applyOps(old, new, ops))
     }
 
     @Test
@@ -94,7 +104,16 @@ class MyersTest {
             TimeSource.Monotonic.markNow() - 1.toDuration(DurationUnit.MILLISECONDS),
         )
 
-        assertEquals(new, applyOps(old, new, d.intoInner().ops()))
+        val ops = d.intoInner().ops()
+        assertEquals(
+            listOf(
+                DiffOp.Equal(0, 0, 10),
+                DiffOp.Replace(10, 41, 10, 41),
+                DiffOp.Equal(51, 51, 49),
+            ),
+            ops,
+        )
+        assertEquals(new, applyOps(old, new, ops))
     }
 
     @Test

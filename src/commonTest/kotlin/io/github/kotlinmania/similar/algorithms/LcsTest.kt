@@ -54,7 +54,17 @@ class LcsTest {
 
         lcsDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
-        assertEquals(new, applyOps(old, new, d.intoInner().ops()))
+        val ops = d.intoInner().ops()
+        assertEquals(
+            listOf(
+                DiffOp.Equal(0, 0, 3),
+                DiffOp.Replace(3, 2, 3, 2),
+                DiffOp.Equal(5, 5, 2),
+                DiffOp.Replace(7, 1, 7, 1),
+            ),
+            ops,
+        )
+        assertEquals(new, applyOps(old, new, ops))
     }
 
     @Test
@@ -65,7 +75,18 @@ class LcsTest {
 
         lcsDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
-        assertEquals(new, applyOps(old, new, d.ops()))
+        val ops = d.ops()
+        assertEquals(
+            listOf(
+                DiffOp.Equal(0, 0, 2),
+                DiffOp.Delete(2, 1, 2),
+                DiffOp.Equal(3, 2, 1),
+                DiffOp.Equal(4, 3, 1),
+                DiffOp.Insert(5, 4, 2),
+            ),
+            ops,
+        )
+        assertEquals(new, applyOps(old, new, ops))
     }
 
     @Test
