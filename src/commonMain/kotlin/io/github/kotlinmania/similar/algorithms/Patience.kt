@@ -38,18 +38,19 @@ fun <E, T> patienceDiffDeadline(
     val oldIndexes = unique(old, oldRange)
     val newIndexes = unique(new, newRange)
 
-    val patience = PatienceHook(
-        d = d,
-        old = old,
-        oldCurrent = oldRange.first,
-        oldEnd = oldRange.exclusiveEnd(),
-        oldIndexes = oldIndexes,
-        new = new,
-        newCurrent = newRange.first,
-        newEnd = newRange.exclusiveEnd(),
-        newIndexes = newIndexes,
-        deadline = deadline,
-    )
+    val patience =
+        PatienceHook(
+            d = d,
+            old = old,
+            oldCurrent = oldRange.first,
+            oldEnd = oldRange.exclusiveEnd(),
+            oldIndexes = oldIndexes,
+            new = new,
+            newCurrent = newRange.first,
+            newEnd = newRange.exclusiveEnd(),
+            newIndexes = newIndexes,
+            deadline = deadline,
+        )
     val replace = Replace(patience)
     return myersDiffDeadline(
         replace,
@@ -87,22 +88,29 @@ private class PatienceHook<E, T>(
             }
             if (oldCurrent > a0) {
                 when (val equal = d.equal(a0, b0, oldCurrent - a0)) {
-                    is DiffHookResult.Err -> return equal
+                    is DiffHookResult.Err -> {
+                        return equal
+                    }
+
                     is DiffHookResult.Ok -> {}
                 }
             }
             val noFinishD = NoFinishHook(d)
             when (
-                val diffed = myersDiffDeadline(
-                    noFinishD,
-                    old,
-                    oldCurrent until oldIndexes[oldUniqueIndex].originalIndex(),
-                    new,
-                    newCurrent until newIndexes[newUniqueIndex].originalIndex(),
-                    deadline,
-                )
+                val diffed =
+                    myersDiffDeadline(
+                        noFinishD,
+                        old,
+                        oldCurrent until oldIndexes[oldUniqueIndex].originalIndex(),
+                        new,
+                        newCurrent until newIndexes[newUniqueIndex].originalIndex(),
+                        deadline,
+                    )
             ) {
-                is DiffHookResult.Err -> return diffed
+                is DiffHookResult.Err -> {
+                    return diffed
+                }
+
                 is DiffHookResult.Ok -> {}
             }
             oldCurrent = oldIndexes[oldUniqueIndex].originalIndex()

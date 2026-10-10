@@ -62,57 +62,72 @@ class Replace<E, D : DiffHook<E>> private constructor(
 
     override fun equal(oldIndex: Int, newIndex: Int, len: Int): DiffHookResult<E> {
         when (val flushed = flushDelIns()) {
-            is DiffHookResult.Err -> return flushed
+            is DiffHookResult.Err -> {
+                return flushed
+            }
+
             is DiffHookResult.Ok -> {}
         }
 
         val current = eq
-        eq = if (current != null) {
-            Triple(current.first, current.second, current.third + len)
-        } else {
-            Triple(oldIndex, newIndex, len)
-        }
+        eq =
+            if (current != null) {
+                Triple(current.first, current.second, current.third + len)
+            } else {
+                Triple(oldIndex, newIndex, len)
+            }
 
         return DiffHookResult.Ok
     }
 
     override fun delete(oldIndex: Int, oldLen: Int, newIndex: Int): DiffHookResult<E> {
         when (val flushed = flushEq()) {
-            is DiffHookResult.Err -> return flushed
+            is DiffHookResult.Err -> {
+                return flushed
+            }
+
             is DiffHookResult.Ok -> {}
         }
 
         val current = del
-        del = if (current != null) {
-            check(oldIndex == current.first + current.second)
-            Triple(current.first, current.second + oldLen, current.third)
-        } else {
-            Triple(oldIndex, oldLen, newIndex)
-        }
+        del =
+            if (current != null) {
+                check(oldIndex == current.first + current.second)
+                Triple(current.first, current.second + oldLen, current.third)
+            } else {
+                Triple(oldIndex, oldLen, newIndex)
+            }
 
         return DiffHookResult.Ok
     }
 
     override fun insert(oldIndex: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
         when (val flushed = flushEq()) {
-            is DiffHookResult.Err -> return flushed
+            is DiffHookResult.Err -> {
+                return flushed
+            }
+
             is DiffHookResult.Ok -> {}
         }
 
         val current = ins
-        ins = if (current != null) {
-            check(current.second + current.third == newIndex)
-            Triple(current.first, current.second, newLen + current.third)
-        } else {
-            Triple(oldIndex, newIndex, newLen)
-        }
+        ins =
+            if (current != null) {
+                check(current.second + current.third == newIndex)
+                Triple(current.first, current.second, newLen + current.third)
+            } else {
+                Triple(oldIndex, newIndex, newLen)
+            }
 
         return DiffHookResult.Ok
     }
 
     override fun replace(oldIndex: Int, oldLen: Int, newIndex: Int, newLen: Int): DiffHookResult<E> {
         when (val flushed = flushEq()) {
-            is DiffHookResult.Err -> return flushed
+            is DiffHookResult.Err -> {
+                return flushed
+            }
+
             is DiffHookResult.Ok -> {}
         }
         return d.replace(oldIndex, oldLen, newIndex, newLen)
@@ -120,7 +135,10 @@ class Replace<E, D : DiffHook<E>> private constructor(
 
     override fun finish(): DiffHookResult<E> {
         when (val flushed = flushEq()) {
-            is DiffHookResult.Err -> return flushed
+            is DiffHookResult.Err -> {
+                return flushed
+            }
+
             is DiffHookResult.Ok -> {}
         }
         return when (val flushed = flushDelIns()) {

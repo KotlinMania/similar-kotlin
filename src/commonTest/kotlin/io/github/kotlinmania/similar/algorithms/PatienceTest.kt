@@ -50,7 +50,7 @@ class PatienceTest {
         assertTrue(same.finished)
 
         val empty = PatienceFinishHook()
-        patienceDiff(empty, emptyList<Int>().asLookup(), 0 until 0, emptyList<Int>().asLookup(), 0 until 0)
+        patienceDiff(empty, emptyList<Int>().asLookup(), IntRange.EMPTY, emptyList<Int>().asLookup(), IntRange.EMPTY)
         assertTrue(empty.finished)
     }
 }
@@ -68,10 +68,19 @@ private fun <T> applyOps(old: List<T>, new: List<T>, ops: List<DiffOp>): List<T>
     buildList {
         for (op in ops) {
             when (op) {
-                is DiffOp.Equal -> addAll(old.subList(op.oldIndex, op.oldIndex + op.len))
+                is DiffOp.Equal -> {
+                    addAll(old.subList(op.oldIndex, op.oldIndex + op.len))
+                }
+
                 is DiffOp.Delete -> {}
-                is DiffOp.Insert -> addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
-                is DiffOp.Replace -> addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+
+                is DiffOp.Insert -> {
+                    addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+                }
+
+                is DiffOp.Replace -> {
+                    addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+                }
             }
         }
     }

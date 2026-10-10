@@ -6,9 +6,7 @@ import io.github.kotlinmania.similar.IndexLookup
 /**
  * Utility function to check if a range is empty that works on older rust versions
  */
-fun isEmptyRange(range: IntRange): Boolean {
-    return !(range.first <= range.last)
-}
+fun isEmptyRange(range: IntRange): Boolean = !(range.first <= range.last)
 
 /**
  * Represents an item in the vector returned by [unique].
@@ -57,10 +55,11 @@ fun <T> unique(lookup: IndexLookup<T>, range: IntRange): List<UniqueItem<T>> {
             }
         }
     }
-    val rv = byItem.values
-        .filterNotNull()
-        .map { UniqueItem(lookup, it) }
-        .toMutableList()
+    val rv =
+        byItem.values
+            .filterNotNull()
+            .map { UniqueItem(lookup, it) }
+            .toMutableList()
     rv.sortBy { it.originalIndex() }
     return rv
 }
@@ -183,21 +182,23 @@ class IdentifyDistinct private constructor(
 
             for (idx in oldRange) {
                 val item = old[idx]
-                val id = map.getOrPut(item) {
-                    val current = nextId
-                    nextId += step
-                    current
-                }
+                val id =
+                    map.getOrPut(item) {
+                        val current = nextId
+                        nextId += step
+                        current
+                    }
                 oldSeq.add(id)
             }
 
             for (idx in newRange) {
                 val item = new[idx]
-                val id = map.getOrPut(item) {
-                    val current = nextId
-                    nextId += step
-                    current
-                }
+                val id =
+                    map.getOrPut(item) {
+                        val current = nextId
+                        nextId += step
+                        current
+                    }
                 newSeq.add(id)
             }
 

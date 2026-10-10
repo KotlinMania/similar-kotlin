@@ -18,7 +18,9 @@ enum class Algorithm {
 }
 
 /** The tag of a change. */
-enum class ChangeTag(private val sign: Char) {
+enum class ChangeTag(
+    private val sign: Char,
+) {
     /** The change indicates equality, not a change. */
     Equal(' '),
 
@@ -26,7 +28,8 @@ enum class ChangeTag(private val sign: Char) {
     Delete('-'),
 
     /** The change indicates inserted text. */
-    Insert('+');
+    Insert('+'),
+    ;
 
     override fun toString(): String = sign.toString()
 }
@@ -161,29 +164,37 @@ sealed class DiffOp {
      */
     fun asTagTuple(): DiffOpTuple =
         when (this) {
-            is Equal -> DiffOpTuple(
-                DiffTag.Equal,
-                oldIndex until oldIndex + len,
-                newIndex until newIndex + len,
-            )
+            is Equal -> {
+                DiffOpTuple(
+                    DiffTag.Equal,
+                    oldIndex until oldIndex + len,
+                    newIndex until newIndex + len,
+                )
+            }
 
-            is Delete -> DiffOpTuple(
-                DiffTag.Delete,
-                oldIndex until oldIndex + oldLen,
-                newIndex until newIndex,
-            )
+            is Delete -> {
+                DiffOpTuple(
+                    DiffTag.Delete,
+                    oldIndex until oldIndex + oldLen,
+                    newIndex until newIndex,
+                )
+            }
 
-            is Insert -> DiffOpTuple(
-                DiffTag.Insert,
-                oldIndex until oldIndex,
-                newIndex until newIndex + newLen,
-            )
+            is Insert -> {
+                DiffOpTuple(
+                    DiffTag.Insert,
+                    oldIndex until oldIndex,
+                    newIndex until newIndex + newLen,
+                )
+            }
 
-            is Replace -> DiffOpTuple(
-                DiffTag.Replace,
-                oldIndex until oldIndex + oldLen,
-                newIndex until newIndex + newLen,
-            )
+            is Replace -> {
+                DiffOpTuple(
+                    DiffTag.Replace,
+                    oldIndex until oldIndex + oldLen,
+                    newIndex until newIndex + newLen,
+                )
+            }
         }
 
     /** Apply this operation to a diff hook. */
@@ -216,13 +227,24 @@ sealed class DiffOp {
      */
     fun <T> iterSlices(old: List<T>, new: List<T>): Sequence<Pair<ChangeTag, List<T>>> =
         when (this) {
-            is Equal -> sequenceOf(ChangeTag.Equal to old.subList(oldIndex, oldIndex + len))
-            is Insert -> sequenceOf(ChangeTag.Insert to new.subList(newIndex, newIndex + newLen))
-            is Delete -> sequenceOf(ChangeTag.Delete to old.subList(oldIndex, oldIndex + oldLen))
-            is Replace -> sequenceOf(
-                ChangeTag.Delete to old.subList(oldIndex, oldIndex + oldLen),
-                ChangeTag.Insert to new.subList(newIndex, newIndex + newLen),
-            )
+            is Equal -> {
+                sequenceOf(ChangeTag.Equal to old.subList(oldIndex, oldIndex + len))
+            }
+
+            is Insert -> {
+                sequenceOf(ChangeTag.Insert to new.subList(newIndex, newIndex + newLen))
+            }
+
+            is Delete -> {
+                sequenceOf(ChangeTag.Delete to old.subList(oldIndex, oldIndex + oldLen))
+            }
+
+            is Replace -> {
+                sequenceOf(
+                    ChangeTag.Delete to old.subList(oldIndex, oldIndex + oldLen),
+                    ChangeTag.Insert to new.subList(newIndex, newIndex + newLen),
+                )
+            }
         }
 
     internal fun isEmpty(): Boolean {

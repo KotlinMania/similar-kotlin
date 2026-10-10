@@ -8,16 +8,13 @@ import kotlin.time.TimeSource
 /**
  * Checks if a deadline was exeeded.
  */
-fun deadlineExceeded(deadline: TimeMark?): Boolean {
-    return when (deadline) {
+fun deadlineExceeded(deadline: TimeMark?): Boolean =
+    when (deadline) {
         null -> false
         else -> deadline.hasPassedNow()
     }
-}
 
 /**
  * Converst a duration into a deadline.  This can be a noop on wasm
  */
-fun durationToDeadline(add: Duration): TimeMark? {
-    return TimeSource.Monotonic.markNow() + add
-}
+fun durationToDeadline(add: Duration): TimeMark? = TimeSource.Monotonic.markNow() + add

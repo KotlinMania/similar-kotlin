@@ -9,16 +9,17 @@ class CommonTest {
     fun testNonStringIterChange() {
         val old = listOf(1, 2, 3)
         val new = listOf(1, 2, 4)
-        val changes = captureDiffSlices(Algorithm.Myers, old, new)
-            .flatMap { op ->
-                val iter = op.iterChanges(old.asLookup(), new.asLookup())
-                buildList {
-                    while (iter.hasNext()) {
-                        val change = iter.next()
-                        add(change.tag() to change.value())
+        val changes =
+            captureDiffSlices(Algorithm.Myers, old, new)
+                .flatMap { op ->
+                    val iter = op.iterChanges(old.asLookup(), new.asLookup())
+                    buildList {
+                        while (iter.hasNext()) {
+                            val change = iter.next()
+                            add(change.tag() to change.value())
+                        }
                     }
                 }
-            }
 
         assertEquals(
             listOf(

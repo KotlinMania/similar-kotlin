@@ -66,7 +66,9 @@ interface DiffableStr : DiffableStrRef {
 }
 
 /** Diffable string wrapper for Kotlin [String] values. */
-data class DiffableString(private val value: String) : DiffableStr {
+data class DiffableString(
+    private val value: String,
+) : DiffableStr {
     override fun tokenizeLines(): List<String> {
         val iter = value.withIndex().iterator()
         var lastPos = 0

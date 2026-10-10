@@ -19,7 +19,9 @@ fun <T> upperSeqRatio(seq1: List<T>, seq2: List<T>): Float {
  * It counts the number of matches without regard to order, which is an
  * obvious upper bound.
  */
-class QuickSeqRatio<T>(seq: List<T>) {
+class QuickSeqRatio<T>(
+    seq: List<T>,
+) {
     private val counts: Map<T, Int> =
         buildMap {
             for (word in seq) {

@@ -8,10 +8,11 @@ import kotlin.test.assertEquals
 class UdiffTest {
     @Test
     fun testUnifiedDiff() {
-        val diff = TextDiff.fromLines(
-            "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ",
-            "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\nS\nt\nu\nv\nw\nx\ny\nz\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\no\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ",
-        )
+        val diff =
+            TextDiff.fromLines(
+                "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ",
+                "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\nS\nt\nu\nv\nw\nx\ny\nz\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\no\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ",
+            )
 
         assertEquals(
             "--- a.txt\n" +
@@ -53,7 +54,11 @@ class UdiffTest {
         )
         assertEquals(
             "--- a.txt\n+++ b.txt\n@@ -1 +1 @@\n-a\n+b\n",
-            diff.unifiedDiff().missingNewlineHint(false).header("a.txt", "b.txt").toString(),
+            diff
+                .unifiedDiff()
+                .missingNewlineHint(false)
+                .header("a.txt", "b.txt")
+                .toString(),
         )
     }
 }

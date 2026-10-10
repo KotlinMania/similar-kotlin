@@ -10,19 +10,21 @@ import kotlin.test.assertTrue
 class LcsTest {
     @Test
     fun testTable() {
-        val table = makeTable(
-            listOf(2, 3).asLookup(),
-            0 until 2,
-            listOf(0, 1, 2).asLookup(),
-            0 until 3,
-            null,
-        )
+        val table =
+            makeTable(
+                listOf(2, 3).asLookup(),
+                0 until 2,
+                listOf(0, 1, 2).asLookup(),
+                0 until 3,
+                null,
+            )
 
-        val expected = mapOf<Pair<Int, Int>, Int>(
-            (1 to 0) to 1,
-            (0 to 0) to 1,
-            (2 to 0) to 1,
-        )
+        val expected =
+            mapOf<Pair<Int, Int>, Int>(
+                (1 to 0) to 1,
+                (0 to 0) to 1,
+                (2 to 0) to 1,
+            )
         assertEquals(expected, checkNotNull(table))
     }
 
@@ -90,7 +92,7 @@ class LcsTest {
         assertTrue(same.finished)
 
         val empty = LcsFinishHook()
-        lcsDiff(empty, emptyList<Int>().asLookup(), 0 until 0, emptyList<Int>().asLookup(), 0 until 0)
+        lcsDiff(empty, emptyList<Int>().asLookup(), IntRange.EMPTY, emptyList<Int>().asLookup(), IntRange.EMPTY)
         assertTrue(empty.finished)
     }
 
@@ -123,10 +125,19 @@ private fun <T> applyOps(old: List<T>, new: List<T>, ops: List<DiffOp>): List<T>
     buildList {
         for (op in ops) {
             when (op) {
-                is DiffOp.Equal -> addAll(old.subList(op.oldIndex, op.oldIndex + op.len))
+                is DiffOp.Equal -> {
+                    addAll(old.subList(op.oldIndex, op.oldIndex + op.len))
+                }
+
                 is DiffOp.Delete -> {}
-                is DiffOp.Insert -> addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
-                is DiffOp.Replace -> addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+
+                is DiffOp.Insert -> {
+                    addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+                }
+
+                is DiffOp.Replace -> {
+                    addAll(new.subList(op.newIndex, op.newIndex + op.newLen))
+                }
             }
         }
     }

@@ -3,7 +3,9 @@ package io.github.kotlinmania.similar
 
 import io.github.kotlinmania.similar.text.TextDiff
 
-private class MissingNewlineHint(private val enabled: Boolean) {
+private class MissingNewlineHint(
+    private val enabled: Boolean,
+) {
     override fun toString(): String =
         if (enabled) {
             "\n\\ No newline at end of file"
@@ -87,7 +89,8 @@ class UnifiedDiff private constructor(
 
     /** Iterates over all configured hunks. */
     fun iterHunks(): List<UnifiedDiffHunk> =
-        diff.groupedOps(contextRadiusValue)
+        diff
+            .groupedOps(contextRadiusValue)
             .filter { it.isNotEmpty() }
             .map { UnifiedDiffHunk.new(it, diff, missingNewlineHintValue) }
 
@@ -185,12 +188,14 @@ fun unifiedDiff(
     n: Int,
     header: Pair<String, String>? = null,
 ): String {
-    val formatter = TextDiff.configure()
-        .algorithm(alg)
-        .diffLines(old, new)
-        .unifiedDiff()
-        .contextRadius(n)
-        .headerOpt(header)
+    val formatter =
+        TextDiff
+            .configure()
+            .algorithm(alg)
+            .diffLines(old, new)
+            .unifiedDiff()
+            .contextRadius(n)
+            .headerOpt(header)
     return formatter.toString()
 }
 

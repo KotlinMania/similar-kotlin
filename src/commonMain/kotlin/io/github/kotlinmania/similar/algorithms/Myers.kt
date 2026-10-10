@@ -40,13 +40,18 @@ fun <E, T> myersDiffDeadline(
     val vb = V(maxD)
     val vf = V(maxD)
     when (val conquered = conquer(d, old, oldRange, new, newRange, vf, vb, deadline)) {
-        is DiffHookResult.Err -> return conquered
+        is DiffHookResult.Err -> {
+            return conquered
+        }
+
         is DiffHookResult.Ok -> {}
     }
     return d.finish()
 }
 
-internal class V(maxD: Int) {
+internal class V(
+    maxD: Int,
+) {
     private val offset = maxD
     private val values = MutableList(2 * maxD) { 0 }
 
@@ -92,22 +97,24 @@ internal fun <T> findMiddleSnake(
         }
 
         for (k in d downTo -d step 2) {
-            var x = if (k == -d || (k != d && vf[k - 1] < vf[k + 1])) {
-                vf[k + 1]
-            } else {
-                vf[k - 1] + 1
-            }
+            var x =
+                if (k == -d || (k != d && vf[k - 1] < vf[k + 1])) {
+                    vf[k + 1]
+                } else {
+                    vf[k - 1] + 1
+                }
             val y = x - k
 
             val x0 = x
             val y0 = y
             if (x < oldRange.rangeLen() && y < newRange.rangeLen()) {
-                val advance = commonPrefixLen(
-                    old,
-                    oldRange.first + x until oldRange.exclusiveEnd(),
-                    new,
-                    newRange.first + y until newRange.exclusiveEnd(),
-                )
+                val advance =
+                    commonPrefixLen(
+                        old,
+                        oldRange.first + x until oldRange.exclusiveEnd(),
+                        new,
+                        newRange.first + y until newRange.exclusiveEnd(),
+                    )
                 x += advance
             }
 
@@ -121,20 +128,22 @@ internal fun <T> findMiddleSnake(
         }
 
         for (k in d downTo -d step 2) {
-            var x = if (k == -d || (k != d && vb[k - 1] < vb[k + 1])) {
-                vb[k + 1]
-            } else {
-                vb[k - 1] + 1
-            }
+            var x =
+                if (k == -d || (k != d && vb[k - 1] < vb[k + 1])) {
+                    vb[k + 1]
+                } else {
+                    vb[k - 1] + 1
+                }
             var y = x - k
 
             if (x < n && y < m) {
-                val advance = commonSuffixLen(
-                    old,
-                    oldRange.first until oldRange.first + n - x,
-                    new,
-                    newRange.first until newRange.first + m - y,
-                )
+                val advance =
+                    commonSuffixLen(
+                        old,
+                        oldRange.first until oldRange.first + n - x,
+                        new,
+                        newRange.first until newRange.first + m - y,
+                    )
                 x += advance
                 y += advance
             }
@@ -170,7 +179,10 @@ private fun <E, T> conquer(
     val commonPrefixLen = commonPrefixLen(old, oldStart until oldEnd, new, newStart until newEnd)
     if (commonPrefixLen > 0) {
         when (val equal = d.equal(oldStart, newStart, commonPrefixLen)) {
-            is DiffHookResult.Err -> return equal
+            is DiffHookResult.Err -> {
+                return equal
+            }
+
             is DiffHookResult.Ok -> {}
         }
     }
@@ -188,12 +200,18 @@ private fun <E, T> conquer(
     if (!isEmptyRange(oldRange) || !isEmptyRange(newRange)) {
         if (isEmptyRange(newRange)) {
             when (val deleted = d.delete(oldRange.first, oldRange.rangeLen(), newRange.first)) {
-                is DiffHookResult.Err -> return deleted
+                is DiffHookResult.Err -> {
+                    return deleted
+                }
+
                 is DiffHookResult.Ok -> {}
             }
         } else if (isEmptyRange(oldRange)) {
             when (val inserted = d.insert(oldRange.first, newRange.first, newRange.rangeLen())) {
-                is DiffHookResult.Err -> return inserted
+                is DiffHookResult.Err -> {
+                    return inserted
+                }
+
                 is DiffHookResult.Ok -> {}
             }
         } else {
@@ -203,20 +221,32 @@ private fun <E, T> conquer(
                 val (oldA, oldB) = splitAt(oldRange, xStart)
                 val (newA, newB) = splitAt(newRange, yStart)
                 when (val left = conquer(d, old, oldA, new, newA, vf, vb, deadline)) {
-                    is DiffHookResult.Err -> return left
+                    is DiffHookResult.Err -> {
+                        return left
+                    }
+
                     is DiffHookResult.Ok -> {}
                 }
                 when (val right = conquer(d, old, oldB, new, newB, vf, vb, deadline)) {
-                    is DiffHookResult.Err -> return right
+                    is DiffHookResult.Err -> {
+                        return right
+                    }
+
                     is DiffHookResult.Ok -> {}
                 }
             } else {
                 when (val deleted = d.delete(oldRange.first, oldRange.rangeLen(), newRange.first)) {
-                    is DiffHookResult.Err -> return deleted
+                    is DiffHookResult.Err -> {
+                        return deleted
+                    }
+
                     is DiffHookResult.Ok -> {}
                 }
                 when (val inserted = d.insert(oldRange.first, newRange.first, newRange.rangeLen())) {
-                    is DiffHookResult.Err -> return inserted
+                    is DiffHookResult.Err -> {
+                        return inserted
+                    }
+
                     is DiffHookResult.Ok -> {}
                 }
             }
@@ -225,7 +255,10 @@ private fun <E, T> conquer(
 
     if (commonSuffixLen > 0) {
         when (val equal = d.equal(commonSuffix.first, commonSuffix.second, commonSuffixLen)) {
-            is DiffHookResult.Err -> return equal
+            is DiffHookResult.Err -> {
+                return equal
+            }
+
             is DiffHookResult.Ok -> {}
         }
     }
