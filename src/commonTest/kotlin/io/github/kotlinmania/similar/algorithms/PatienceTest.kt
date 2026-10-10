@@ -16,7 +16,20 @@ class PatienceTest {
 
         patienceDiff(d, old.asLookup(), old.indices, new.asLookup(), new.indices)
 
-        assertEquals(new, applyOps(old, new, d.intoInner().ops()))
+        val ops = d.intoInner().ops()
+        assertEquals(
+            listOf(
+                DiffOp.Replace(0, 1, 0, 1),
+                DiffOp.Equal(1, 1, 3),
+                DiffOp.Replace(4, 1, 4, 2),
+                DiffOp.Equal(5, 6, 2),
+                DiffOp.Replace(7, 2, 8, 1),
+                DiffOp.Equal(9, 9, 1),
+                DiffOp.Replace(10, 1, 10, 1),
+            ),
+            ops,
+        )
+        assertEquals(new, applyOps(old, new, ops))
     }
 
     @Test

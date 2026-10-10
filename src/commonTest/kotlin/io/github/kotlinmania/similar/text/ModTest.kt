@@ -91,14 +91,18 @@ class ModTest {
                 "Hello World\nsome amazing stuff here\nsome more stuff here\n",
             )
         assertTrue(diff.newlineTerminated())
+        val changes =
+            diff.ops().flatMap { op ->
+                diff.iterChanges(op).asSequence().toList()
+            }
         assertEquals(
             listOf(
-                ChangeTag.Equal to "Hello World\n",
-                ChangeTag.Delete to "some stuff here\n",
-                ChangeTag.Insert to "some amazing stuff here\n",
-                ChangeTag.Equal to "some more stuff here\n",
+                Change(ChangeTag.Equal, 0, 0, "Hello World\n"),
+                Change(ChangeTag.Delete, 1, null, "some stuff here\n"),
+                Change(ChangeTag.Insert, null, 1, "some amazing stuff here\n"),
+                Change(ChangeTag.Equal, 2, 2, "some more stuff here\n"),
             ),
-            diff.iterAllChanges().toTagValues(),
+            changes,
         )
     }
 
@@ -106,13 +110,17 @@ class ModTest {
     fun testVirtualNewlines() {
         val diff = TextDiff.fromLines("a\nb", "a\nc\n")
         assertTrue(diff.newlineTerminated())
+        val changes =
+            diff.ops().flatMap { op ->
+                diff.iterChanges(op).asSequence().toList()
+            }
         assertEquals(
             listOf(
-                ChangeTag.Equal to "a\n",
-                ChangeTag.Delete to "b",
-                ChangeTag.Insert to "c\n",
+                Change(ChangeTag.Equal, 0, 0, "a\n"),
+                Change(ChangeTag.Delete, 1, null, "b"),
+                Change(ChangeTag.Insert, null, 1, "c\n"),
             ),
-            diff.iterAllChanges().toTagValues(),
+            changes,
         )
     }
 
@@ -184,11 +192,3 @@ class ModTest {
     // test_serde and test_serde_ops:
     // Rust crate serde feature serialization tests rely on serde JSON snapshots.
 }
-
-private fun Iterator<io.github.kotlinmania.similar.Change<String>>.toTagValues(): List<Pair<ChangeTag, String>> =
-    buildList {
-        while (hasNext()) {
-            val change = next()
-            add(change.tag() to change.value())
-        }
-    }

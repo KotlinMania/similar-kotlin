@@ -26,23 +26,35 @@ class InlineTest {
                 }
             }
 
-        assertEquals(ChangeTag.Insert, changes.first().tag())
         assertEquals(
-            "Stuff\n",
-            changes
-                .first()
-                .values()
-                .single()
-                .second,
-        )
-        assertEquals(ChangeTag.Delete, changes.last().tag())
-        assertTrue(
-            changes.any { change ->
-                change.tag() == ChangeTag.Insert &&
-                    change.values().any { (emphasized, value) ->
-                        emphasized && value.contains("amazing")
-                    }
-            },
+            listOf(
+                InlineChange(ChangeTag.Insert, null, 0, listOf(InlineSegment(false, "Stuff\n"))),
+                InlineChange(ChangeTag.Equal, 0, 1, listOf(InlineSegment(false, "Hello World\n"))),
+                InlineChange(
+                    ChangeTag.Delete,
+                    1,
+                    null,
+                    listOf(
+                        InlineSegment(false, "some "),
+                        InlineSegment(false, "stuff here\n"),
+                    ),
+                ),
+                InlineChange(
+                    ChangeTag.Insert,
+                    null,
+                    2,
+                    listOf(
+                        InlineSegment(false, "some "),
+                        InlineSegment(true, "amazing "),
+                        InlineSegment(false, "stuff here\n"),
+                    ),
+                ),
+                InlineChange(ChangeTag.Equal, 2, 3, listOf(InlineSegment(false, "some more stuff here\n"))),
+                InlineChange(ChangeTag.Delete, 3, null, listOf(InlineSegment(false, "\n"))),
+                InlineChange(ChangeTag.Delete, 4, null, listOf(InlineSegment(false, "Aha stuff here\n"))),
+                InlineChange(ChangeTag.Delete, 5, null, listOf(InlineSegment(false, "and more stuff"))),
+            ),
+            changes,
         )
     }
 }
