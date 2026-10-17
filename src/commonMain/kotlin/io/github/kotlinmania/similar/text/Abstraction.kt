@@ -1,6 +1,8 @@
 // port-lint: source text/abstraction.rs
 package io.github.kotlinmania.similar.text
 
+import io.github.kotlinmania.unicodesegmentation.UnicodeSegmentation
+
 /**
  * Reference to a [DiffableStr].
  *
@@ -140,9 +142,11 @@ data class DiffableString(
         return rv
     }
 
-    override fun tokenizeUnicodeWords(): List<String> = tokenizeWords()
+    override fun tokenizeUnicodeWords(): List<String> =
+        UnicodeSegmentation.splitWordBounds(value).toList()
 
-    override fun tokenizeGraphemes(): List<String> = tokenizeChars()
+    override fun tokenizeGraphemes(): List<String> =
+        UnicodeSegmentation.graphemes(value, true).toList()
 
     override fun asStr(): String = value
 
