@@ -1,4 +1,3 @@
-// port-lint: source text/mod.rs
 package io.github.kotlinmania.similar.text
 
 import io.github.kotlinmania.similar.Change
@@ -8,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ModTest {
+class TextDiffTest {
     @Test
     fun testCapturedOps() {
         val diff =

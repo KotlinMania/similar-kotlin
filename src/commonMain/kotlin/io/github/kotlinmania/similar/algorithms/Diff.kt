@@ -1,4 +1,3 @@
-// port-lint: source algorithms/mod.rs
 package io.github.kotlinmania.similar.algorithms
 
 import io.github.kotlinmania.similar.Algorithm

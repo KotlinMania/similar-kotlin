@@ -44,8 +44,8 @@ class AbstractionTest {
     @Test
     fun testSplitGraphemes() {
         assertEquals(
-            listOf("a", "b", "c", "f", "\u00f6", "\u2744", "\ufe0f"),
-            "abcf\u00f6\u2744\ufe0f".asDiffableStr().tokenizeGraphemes(),
+            listOf("a", "b", "c", "f", "ö", "❄️"),
+            "abcfö❄️".asDiffableStr().tokenizeGraphemes(),
         )
     }
 
